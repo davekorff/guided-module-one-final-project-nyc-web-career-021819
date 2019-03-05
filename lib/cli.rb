@@ -53,10 +53,10 @@ class CommandLineInterface
       puts "User has no repos"
       menu
     end
-    select_repo_by_username_menu
+    find_by_username_sub_menu
   end
 
-  def select_repo_by_username_menu
+  def find_by_username_sub_menu
     puts "Select repo number to view repo details"
     input = gets_user_input
     @selected_repo = @repos[input.to_i - 1]
@@ -103,6 +103,66 @@ class CommandLineInterface
     menu
   end
 
+  def find_by_keyword_menu
+    puts "Enter keyword:"
+    input = gets_user_input.downcase
+    @repos_by_keyword = find_repo_by_keyword(input)
+    if @repos_by_keyword.empty?
+      puts "There are no repos with '#{input}' in the description."
+    else
+      @repos_by_keyword.each_with_index do |repo, index|
+        puts "#{index + 1}. #{repo.project_name} - #{repo.description}"
+      end
+    end
+    find_by_keyword_sub_menu
+  end
+
+  def find_by_keyword_sub_menu
+    puts "Select repo number to view repo details"
+    input = gets_user_input
+    @selected_repo = @repos_by_keyword[input.to_i - 1]
+    puts "#{@selected_repo.project_name} - #{@selected_repo.description}"
+    puts "1. Show Repo URL"
+    puts "2. Update Repo name"
+    puts "3. Update Repo description"
+  end
+
+  def show_repo_url
+    puts "#{@selected_repo.project_name} - #{@selected_repo.repo_url}"
+    # *TO DO* add functionality to open url in browser
+    menu
+  end
+
+  def update_repo_name
+    puts "Enter new Repo name:"
+    input = gets_user_input
+    @selected_repo.update_attribute(:project_name, input)
+    puts "Updated project name to #{@selected_repo.project_name}"
+    menu
+  end
+
+  def update_repo_description
+    puts "Enter new Repo description:"
+    input = gets_user_input
+    @selected_repo.update_attribute(:description, input)
+    puts "Updated description to #{@selected_repo.description}"
+    menu
+  end
+
+  def find_all_collabs_for_repo
+    puts "Enter a project name (exact spelling and capitalization matter):"
+    input = gets_user_input
+    repo_by_project_name = find_repo_by_project_name(input)
+    if repo_by_project_name == nil
+      puts "No project found"
+    else
+      repo_by_project_name.users.each do |user|
+        puts user.name
+      end
+    end
+    menu
+  end
+
   def main_menu_loop
     while user_input != "exit"
       case @last_input.to_i
@@ -118,62 +178,20 @@ class CommandLineInterface
             delete_repo
           end
         end
-        break
       when 2
-        puts "Enter keyword:"
-        input = gets_user_input.downcase
-        repos_by_keyword = find_repo_by_keyword(input)
-        if repos_by_keyword.empty?
-          puts "There are no repos with '#{input}' in the description."
-        else
-          repos_by_keyword.each_with_index do |repo, index|
-            puts "#{index + 1}. #{repo.project_name} - #{repo.description}"
-          end
-        end
-        puts "Select repo number to view repo details"
-        input = gets_user_input
-        selected_repo = repos_by_keyword[input.to_i - 1]
-        puts "#{selected_repo.project_name} - #{selected_repo.description}"
-        puts "1. Show Repo URL"
-        puts "2. Update Repo name"
-        puts "3. Update Repo description"
+        find_by_keyword_menu
         while user_input != "exit"
           case @last_input.to_i
           when 1
-            # show repo URL
-            puts "#{selected_repo.project_name} - #{selected_repo.repo_url}"
-            # add functionality to open url in browser
-            break
+            show_repo_url
           when 2
-            # update repo name
-            puts "Enter new Repo name:"
-            input = gets_user_input
-            selected_repo.update_attribute(:project_name, input)
-            puts selected_repo.project_name
-            break
+            update_repo_name
           when 3
-            # update repo description
-            puts "Enter new Repo description:"
-            input = gets_user_input
-            selected_repo.update_attribute(:description, input)
-            puts selected_repo.description
-            break
+            update_repo_description
           end
         end
       when 3
-        puts "Enter a project name:"
-        input = gets_user_input
-        repo_by_project_name = find_repo_by_project_name(input)
-        if repo_by_project_name == nil
-          puts "No project found"
-        else
-          repo_by_project_name.users.each do |user|
-            puts user.name
-          end
-        end
-      else
-        menu
-        break
+        find_all_collabs_for_repo
       end
     end
   end
