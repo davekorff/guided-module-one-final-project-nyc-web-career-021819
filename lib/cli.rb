@@ -91,6 +91,18 @@ class CommandLineInterface
     menu
   end
 
+  def delete_repo
+    puts "Are you sure you want to delete #{@selected_repo.project_name}? (y/n)"
+    input = gets_user_input[0].downcase
+    if input == "y"
+      Repo.destroy(@selected_repo.id)
+      puts "Deleted #{@selected_repo.project_name}!"
+    else
+      puts "Good idea. Never delete your repos!"
+    end
+    menu
+  end
+
   def main_menu_loop
     while user_input != "exit"
       case @last_input.to_i
@@ -99,22 +111,11 @@ class CommandLineInterface
         while user_input != "exit"
           case @last_input.to_i
           when 1
-            # Remove user from repo
             remove_user_from_repo
           when 2
-            # Add user to repo
             add_user_to_repo
           when 3
-            # Delete Repo
-            puts "Are you sure you want to delete #{selected_repo.project_name}? (y/n)"
-            input = gets_user_input[0].downcase
-            if input == "y"
-              Repo.destroy(selected_repo.id)
-              puts "Repo deleted!"
-              puts Repo.all
-            else
-              puts "Good idea. Never delete your repos!"
-            end
+            delete_repo
           end
         end
         break
