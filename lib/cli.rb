@@ -148,10 +148,10 @@ class CommandLineInterface
         if repo_by_project_name == nil
           puts "No project found"
         else
-          binding.pry
-          puts repo_by_project_name.users
+          repo_by_project_name.users.each do |user|
+            puts user.name
+          end
         end
-        # puts repo_by_project_name.users unless repo_by_project_name == nil
       else
         menu
         break
