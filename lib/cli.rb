@@ -38,6 +38,8 @@ class CommandLineInterface
     puts "2. Find all projects with a keyword"
     puts "3. Find all collaborators for a project"
           # *TO DO* add functionality to add users to project
+    puts "4. Create new user"
+      # * TO DO * Build this functionality
     main_menu_loop
   end
 
@@ -179,6 +181,24 @@ class CommandLineInterface
     menu
   end
 
+  def create_new_user
+    puts "Enter new user's github username:"
+    github_username = gets_user_input
+    if username_exists?(github_username)
+      puts "#{github_username} already exists"
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      create_new_user
+    end
+    puts "Enter new user's full name:"
+    full_name = gets_user_input
+    puts "Enter new user's mod:"
+    mod = gets_user_input
+    new_user = User.create(name: full_name, mod: mod, github_username: github_username, profile_url: "https://github.com/#{github_username}")
+    puts "Created #{github_username}!"
+    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    menu
+  end
+
   def main_menu_loop
     while user_input != "exit"
       case @last_input.to_i
@@ -208,6 +228,8 @@ class CommandLineInterface
         end
       when 3
         find_all_collabs_for_repo
+      when 4
+        create_new_user
       end
     end
   end
