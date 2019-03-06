@@ -5,11 +5,17 @@ require 'json'
 
 
 def get_data(user)
-  response_string = RestClient.get("https://api.github.com/users/#{user}/repos")
+
+  if RestClient.get("https://api.github.com/users/#{user}/repos") {|response, request, result| response }.code != 200
+    return
+  else
+    response_string = RestClient.get("https://api.github.com/users/#{user}/repos")
+  end
+
   response_hash = JSON.parse(response_string)
 
 
-  username = response_hash.first["owner"]["login"]
+  # username = response_hash.first["owner"]["login"]
 
   user_info = {
                 name: response_hash.first["owner"]["login"],

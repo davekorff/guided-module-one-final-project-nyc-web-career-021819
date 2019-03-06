@@ -72,6 +72,11 @@ class CommandLineInterface
   def find_by_username_sub_menu
     puts "Select repo number to view repo details"
     input = gets_user_input
+    if input.to_i > @repos.count
+      puts "That repo doesn't exist."
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      find_by_username_sub_menu
+    end
     @selected_repo = @repos[input.to_i - 1]
     @user_repo = find_user_repo(@user, @selected_repo)
     puts "Repo name: #{@repos[input.to_i - 1].project_name}"
@@ -133,6 +138,7 @@ class CommandLineInterface
     if @repos_by_keyword.empty?
       puts "There are no repos with '#{input}' in the description."
       puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      find_by_keyword_menu
     else
       @repos_by_keyword.each_with_index do |repo, index|
         puts "#{index + 1}. #{repo.project_name} - #{repo.description}"
