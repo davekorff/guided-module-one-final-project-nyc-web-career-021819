@@ -42,3 +42,13 @@ def get_data(user)
     user.repos << new_repo unless user.repos.include?(new_repo)
   end
 end
+
+
+# def search_github(keyword)
+#   if RestClient.get("https://api.github.com/users/#{user}/repos") {|response, request, result| response }.code != 200
+#     return
+#   else
+#     response_string = RestClient.get("https://api.github.com/users/#{user}/repos")
+#   end
+#   "https://api.github.com/search/repositories?q=#{keyword}&sort=stars&order=desc"
+# end

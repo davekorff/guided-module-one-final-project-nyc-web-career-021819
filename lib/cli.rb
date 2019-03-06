@@ -6,9 +6,7 @@ class CommandLineInterface
     puts
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "Welcome to GitHub Repo Explorer"
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "We can help you find your github repos."
-    puts
   end
 
   def gets_user_input
@@ -39,16 +37,20 @@ class CommandLineInterface
   end
 
   def menu
-    puts "What would you like to do?"
+    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    puts "What would you like to do? (enter number)"
+    puts
     puts "1. Find all repos by username"
-    puts "2. Find all repos with a keyword"
+    puts "2. Search repos by keyword"
     puts "3. Find all collaborators for a repo"
           # *TO DO* add functionality to add users to repo
     puts "4. Create new user"
+    puts
     main_menu_loop
   end
 
   def find_by_username_menu
+    puts
     puts "Enter a github username **WITH EXACT CAPITALIZATION** to list that user's repos:"
     input = gets_user_input
     #making an API call
@@ -70,17 +72,20 @@ class CommandLineInterface
   end
 
   def find_by_username_sub_menu
+    # binding.pry
     puts "Select repo number to view repo details"
     input = gets_user_input
     if input.to_i > @repos.count
       puts "That repo doesn't exist."
       puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-      find_by_username_sub_menu
+      menu
     end
+
     @selected_repo = @repos[input.to_i - 1]
     @user_repo = find_user_repo(@user, @selected_repo)
     puts "Repo name: #{@repos[input.to_i - 1].project_name}"
     puts "Description: #{@repos[input.to_i - 1].description}"
+    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "What would you like to do?"
     puts "1. Remove current user from repo"
     puts "2. Add another user to repo"
@@ -141,7 +146,8 @@ class CommandLineInterface
       find_by_keyword_menu
     else
       @repos_by_keyword.each_with_index do |repo, index|
-        puts "#{index + 1}. #{repo.project_name} - #{repo.description}"
+        puts "#{index + 1}. #{repo.project_name}"
+        puts "Description: #{repo.description}"
         puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       end
     end
