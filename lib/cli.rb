@@ -157,7 +157,7 @@ class CommandLineInterface
   end
 
   def find_by_keyword_sub_menu
-    puts "Select repo number to view repo details"
+    puts "Enter repo number to view repo details"
     input = gets_user_input
     @selected_repo = @repos_by_keyword[input.to_i - 1]
     if input.to_i > @repos_by_keyword.count
@@ -166,16 +166,16 @@ class CommandLineInterface
       find_by_keyword_sub_menu
     else
       puts "#{@selected_repo.project_name} - #{@selected_repo.description}"
-      puts "1. Show Repo URL"
-      puts "2. Update Repo name"
-      puts "3. Update Repo description"
+      puts "1. Display repo URL and open repo in your browser"
+      puts "2. Update repo name"
+      puts "3. Update repo description"
     end
   end
 
   def show_repo_url
     puts
     puts "#{@selected_repo.project_name} - #{@selected_repo.repo_url}"
-    # *TO DO* add functionality to open url in browser
+    `open #{@selected_repo.repo_url}`
     menu
   end
 
@@ -227,7 +227,6 @@ class CommandLineInterface
     mod = gets_user_input
     new_user = User.create(name: full_name, mod: mod, github_username: github_username, profile_url: "https://github.com/#{github_username}")
     puts "Created #{github_username}!"
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     menu
   end
 
