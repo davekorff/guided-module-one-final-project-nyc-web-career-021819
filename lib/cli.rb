@@ -1,3 +1,6 @@
+require_relative '../config/environment'
+
+
 class CommandLineInterface
   def greet
     puts "Welcome to GitHub Repo Explorer"
@@ -45,6 +48,9 @@ class CommandLineInterface
   def find_by_username_menu
     puts "Enter a github username **WITH EXACT CAPITALIZATION** to list that user's repos:"
     input = gets_user_input
+    #making an API call
+    get_data(input)
+    # binding.pry
     if find_user(input) == false
       puts "That user doesn't exist! (or doesn't exist by that exact username)"
       puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
