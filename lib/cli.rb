@@ -139,6 +139,8 @@ class CommandLineInterface
   def find_by_keyword_menu
     puts "Enter keyword:"
     input = gets_user_input.downcase
+    #Making a call to the API
+    search_github(input)
     @repos_by_keyword = find_repo_by_keyword(input)
     if @repos_by_keyword.empty?
       puts "There are no repos with '#{input}' in the description."
@@ -158,15 +160,21 @@ class CommandLineInterface
     puts "Select repo number to view repo details"
     input = gets_user_input
     @selected_repo = @repos_by_keyword[input.to_i - 1]
-    puts "#{@selected_repo.project_name} - #{@selected_repo.description}"
-    puts "1. Show Repo URL"
-    puts "2. Update Repo name"
-    puts "3. Update Repo description"
+    if input.to_i > @repos_by_keyword.count
+      puts "That repo doesn't exist."
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      find_by_keyword_sub_menu
+    else
+      puts "#{@selected_repo.project_name} - #{@selected_repo.description}"
+      puts "1. Show Repo URL"
+      puts "2. Update Repo name"
+      puts "3. Update Repo description"
+    end
   end
 
   def show_repo_url
+    puts
     puts "#{@selected_repo.project_name} - #{@selected_repo.repo_url}"
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     # *TO DO* add functionality to open url in browser
     menu
   end
