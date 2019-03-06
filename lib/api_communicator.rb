@@ -22,6 +22,7 @@ def get_data(user)
 
   repo_info = []
 
+
   response_hash.each do |repo|
     repo_info << {
                   project_name: repo["name"],
@@ -32,6 +33,6 @@ def get_data(user)
 
   repo_info.each do |repo|
     new_repo = Repo.find_or_create_by(project_name: repo[:project_name], description: repo[:description], repo_url: repo[:repo_url] )
-    user.repos << new_repo
+    user.repos << new_repo unless user.repos.include?(new_repo)
   end
 end

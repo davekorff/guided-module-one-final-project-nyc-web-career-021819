@@ -8,7 +8,6 @@ class CommandLineInterface
     puts "Welcome to GitHub Repo Explorer"
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "We can help you find your github repos."
-    puts "Type 'ctrl' + 'c' at any time to close the application."
     puts
   end
 
@@ -81,6 +80,7 @@ class CommandLineInterface
     puts "1. Remove current user from repo"
     puts "2. Add another user to repo"
     puts "3. Delete repo"
+    puts "4. Return to main menu"
   end
 
   def remove_user_from_repo
@@ -224,6 +224,8 @@ class CommandLineInterface
             add_user_to_repo
           when 3
             delete_repo
+          when 4
+            menu
           end
         end
       when 2
