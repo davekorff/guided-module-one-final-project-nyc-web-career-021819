@@ -1,6 +1,6 @@
 class CommandLineInterface
   def greet
-    puts "Welcome to the GitHub Repo Explorer"
+    puts "Welcome to GitHub Repo Explorer"
     puts "We can help you find your github repos."
     # puts "Type 'exit' at any time to close the application."
   end
@@ -34,17 +34,16 @@ class CommandLineInterface
 
   def menu
     puts "What would you like to do?"
-    puts "1. Find all projects by username"
-    puts "2. Find all projects with a keyword"
-    puts "3. Find all collaborators for a project"
-          # *TO DO* add functionality to add users to project
+    puts "1. Find all repos by username"
+    puts "2. Find all repos with a keyword"
+    puts "3. Find all collaborators for a repo"
+          # *TO DO* add functionality to add users to repo
     puts "4. Create new user"
-      # * TO DO * Build this functionality
     main_menu_loop
   end
 
   def find_by_username_menu
-    puts "Enter a github username **WITH EXACT CAPITALIZATION** to list that user's projects:"
+    puts "Enter a github username **WITH EXACT CAPITALIZATION** to list that user's repos:"
     input = gets_user_input
     if find_user(input) == false
       puts "That user doesn't exist! (or doesn't exist by that exact username)"
@@ -151,7 +150,7 @@ class CommandLineInterface
     puts "Enter new Repo name:"
     input = gets_user_input
     @selected_repo.update_attribute(:project_name, input)
-    puts "Updated project name to #{@selected_repo.project_name}"
+    puts "Updated repo name to #{@selected_repo.project_name}"
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     menu
   end
@@ -166,11 +165,11 @@ class CommandLineInterface
   end
 
   def find_all_collabs_for_repo
-    puts "Enter a project name (exact spelling and capitalization matter):"
+    puts "Enter a repo name (exact spelling and capitalization matter):"
     input = gets_user_input
     repo_by_project_name = find_repo_by_project_name(input)
     if repo_by_project_name == nil
-      puts "No project found"
+      puts "No repo found"
       puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     else
       repo_by_project_name.users.each do |user|
