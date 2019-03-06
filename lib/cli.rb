@@ -78,19 +78,19 @@ class CommandLineInterface
     if input.to_i > @repos.count
       puts "That repo doesn't exist."
       puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-      menu
+      find_by_username_sub_menu
+    else
+      @selected_repo = @repos[input.to_i - 1]
+      @user_repo = find_user_repo(@user, @selected_repo)
+      puts "Repo name: #{@repos[input.to_i - 1].project_name}"
+      puts "Description: #{@repos[input.to_i - 1].description}"
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      puts "What would you like to do?"
+      puts "1. Remove current user from repo"
+      puts "2. Add another user to repo"
+      puts "3. Delete repo"
+      puts "4. Return to main menu"
     end
-
-    @selected_repo = @repos[input.to_i - 1]
-    @user_repo = find_user_repo(@user, @selected_repo)
-    puts "Repo name: #{@repos[input.to_i - 1].project_name}"
-    puts "Description: #{@repos[input.to_i - 1].description}"
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    puts "What would you like to do?"
-    puts "1. Remove current user from repo"
-    puts "2. Add another user to repo"
-    puts "3. Delete repo"
-    puts "4. Return to main menu"
   end
 
   def remove_user_from_repo
