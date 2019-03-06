@@ -6,13 +6,13 @@ class CommandLineInterface
     puts
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "Welcome to GitHub Repo Explorer"
-    puts "We can help you find your github repos."
+    puts "We can help you find github repos."
   end
 
   def gets_user_input
-    input = gets.chomp
+    @input = gets.chomp
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    return input
+    return @input
   end
 
   def username_exists?(github_username)
@@ -56,8 +56,7 @@ class CommandLineInterface
     #making an API call
     get_data(input)
     if find_user(input) == false
-      puts "That user doesn't exist! (or doesn't exist by that exact username)"
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      puts "That user either doesn't exist, doesn't exist by that exact username, or doesn't have any repos."
       menu
     else
       @user = find_user(input)
@@ -72,8 +71,7 @@ class CommandLineInterface
   end
 
   def find_by_username_sub_menu
-    # binding.pry
-    puts "Select repo number to view repo details"
+    puts "Enter repo number to view repo details"
     input = gets_user_input
     if input.to_i > @repos.count
       puts "That repo doesn't exist."
@@ -231,12 +229,17 @@ class CommandLineInterface
   end
 
   def main_menu_loop
-    while user_input != "exit"
-      case @last_input.to_i
+
+    # while user_input != "exit"
+      while gets_user_input != "exit"
+      # case @last_input.to_i
+      case @input.to_i
       when 1
         find_by_username_menu
-        while user_input != "exit"
-          case @last_input.to_i
+        # while user_input != "exit"
+        while gets_user_input != "exit"
+          # case @last_input.to_i
+          case @input.to_i
           when 1
             remove_user_from_repo
           when 2
@@ -249,8 +252,10 @@ class CommandLineInterface
         end
       when 2
         find_by_keyword_menu
-        while user_input != "exit"
-          case @last_input.to_i
+        # while user_input != "exit"
+        while gets_user_input != "exit"
+          # case @last_input.to_i
+          case @input.to_i
           when 1
             show_repo_url
           when 2
@@ -303,8 +308,8 @@ class CommandLineInterface
     Repo.all.find_by(project_name: project_name)
   end
 
-  def user_input
-    @last_input = gets.strip
-  end
+  # def user_input
+  #   @last_input = gets.strip
+  # end
 
 end
