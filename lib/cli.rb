@@ -64,7 +64,6 @@ class CommandLineInterface
     @repos = find_repos(@user)
     if show_repos(@repos) == false
       puts "User has no repos"
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       menu
     end
     find_by_username_sub_menu
@@ -75,7 +74,6 @@ class CommandLineInterface
     input = gets_user_input
     if input.to_i > @repos.count
       puts "That repo doesn't exist."
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       find_by_username_sub_menu
     else
       @selected_repo = @repos[input.to_i - 1]
@@ -94,7 +92,6 @@ class CommandLineInterface
   def remove_user_from_repo
     UserRepo.destroy(@user_repo.id)
     puts "Deleted #{@user.name} from #{@selected_repo.project_name}!"
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     menu
   end
 
@@ -104,16 +101,13 @@ class CommandLineInterface
     @user = find_user(input)
     if @user == false
       puts "That user doesn't exist"
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     else
       if username_exists?(@user.github_username)
         if already_on_repo?(@user, @selected_repo)
           puts "#{@user.name} is already working on #{@selected_repo.project_name}"
-          puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         else
           @user.repos << @selected_repo
           puts "#{@user.name} was successfully added to #{@selected_repo.project_name}"
-          puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         end
       end
     end
@@ -126,10 +120,8 @@ class CommandLineInterface
     if input == "y"
       Repo.destroy(@selected_repo.id)
       puts "Deleted #{@selected_repo.project_name}!"
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     else
-      puts "Good idea. Never delete your repos!"
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      puts "Good idea."
     end
     menu
   end
@@ -142,13 +134,11 @@ class CommandLineInterface
     @repos_by_keyword = find_repo_by_keyword(input)
     if @repos_by_keyword.empty?
       puts "There are no repos with '#{input}' in the description."
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       find_by_keyword_menu
     else
       @repos_by_keyword.each_with_index do |repo, index|
         puts "#{index + 1}. #{repo.project_name}"
         puts "Description: #{repo.description}"
-        puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       end
     end
     find_by_keyword_sub_menu
@@ -160,7 +150,6 @@ class CommandLineInterface
     @selected_repo = @repos_by_keyword[input.to_i - 1]
     if input.to_i > @repos_by_keyword.count
       puts "That repo doesn't exist."
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       find_by_keyword_sub_menu
     else
       puts "#{@selected_repo.project_name} - #{@selected_repo.description}"
@@ -182,7 +171,6 @@ class CommandLineInterface
     input = gets_user_input
     @selected_repo.update_attribute(:project_name, input)
     puts "Updated repo name to #{@selected_repo.project_name}"
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     menu
   end
 
@@ -191,7 +179,6 @@ class CommandLineInterface
     input = gets_user_input
     @selected_repo.update_attribute(:description, input)
     puts "Updated description to #{@selected_repo.description}"
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     menu
   end
 
@@ -201,12 +188,10 @@ class CommandLineInterface
     repo_by_project_name = find_repo_by_project_name(input)
     if repo_by_project_name == nil
       puts "No repo found"
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     else
       repo_by_project_name.users.each do |user|
         puts user.name
       end
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     end
     menu
   end
@@ -216,7 +201,6 @@ class CommandLineInterface
     github_username = gets_user_input
     if username_exists?(github_username)
       puts "#{github_username} already exists"
-      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       create_new_user
     end
     puts "Enter new user's full name:"
@@ -229,16 +213,11 @@ class CommandLineInterface
   end
 
   def main_menu_loop
-
-    # while user_input != "exit"
       while gets_user_input != "exit"
-      # case @last_input.to_i
       case @input.to_i
       when 1
         find_by_username_menu
-        # while user_input != "exit"
         while gets_user_input != "exit"
-          # case @last_input.to_i
           case @input.to_i
           when 1
             remove_user_from_repo
@@ -252,9 +231,7 @@ class CommandLineInterface
         end
       when 2
         find_by_keyword_menu
-        # while user_input != "exit"
         while gets_user_input != "exit"
-          # case @last_input.to_i
           case @input.to_i
           when 1
             show_repo_url
