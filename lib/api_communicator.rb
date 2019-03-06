@@ -18,7 +18,7 @@ def get_data(user)
                 profile_url: response_hash.first["owner"]["html_url"],
               }
 
-  user = User.create(name: user_info[:name], mod: user_info[:mod], github_username: user_info[:github_username], profile_url: user_info[:profile_url])
+  user = User.find_or_create_by(name: user_info[:name], mod: user_info[:mod], github_username: user_info[:github_username], profile_url: user_info[:profile_url])
 
   repo_info = []
 
@@ -31,7 +31,7 @@ def get_data(user)
   end
 
   repo_info.each do |repo|
-    new_repo = Repo.create(project_name: repo[:project_name], description: repo[:description], repo_url: repo[:repo_url] )
+    new_repo = Repo.find_or_create_by(project_name: repo[:project_name], description: repo[:description], repo_url: repo[:repo_url] )
     user.repos << new_repo
   end
 end

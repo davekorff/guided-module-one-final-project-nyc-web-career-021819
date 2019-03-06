@@ -272,7 +272,9 @@ class CommandLineInterface
 
   def find_repo_by_keyword(keyword)
     Repo.all.select do |repo|
-      repo.description.downcase.include?(keyword)
+      if repo.description != nil
+        repo.description.downcase.include?(keyword)
+      end
     end
   end
 
