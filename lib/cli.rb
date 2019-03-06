@@ -3,9 +3,13 @@ require_relative '../config/environment'
 
 class CommandLineInterface
   def greet
+    puts
+    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "Welcome to GitHub Repo Explorer"
+    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "We can help you find your github repos."
-    # puts "Type 'exit' at any time to close the application."
+    puts "Type 'ctrl' + 'c' at any time to close the application."
+    puts
   end
 
   def gets_user_input
@@ -50,7 +54,6 @@ class CommandLineInterface
     input = gets_user_input
     #making an API call
     get_data(input)
-    # binding.pry
     if find_user(input) == false
       puts "That user doesn't exist! (or doesn't exist by that exact username)"
       puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -90,16 +93,20 @@ class CommandLineInterface
   def add_user_to_repo
     puts "Who do you want to add? (enter username with *EXACT* spelling and capitalization):"
     input = gets_user_input
-    # puts input
     @user = find_user(input)
-    if username_exists?(@user.github_username)
-      if already_on_repo?(@user, @selected_repo)
-        puts "#{@user.name} is already working on #{@selected_repo.project_name}"
-        puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-      else
-        @user.repos << @selected_repo
-        puts "#{@user.name} was successfully added to #{@selected_repo.project_name}"
-        puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    if @user == false
+      puts "That user doesn't exist"
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    else
+      if username_exists?(@user.github_username)
+        if already_on_repo?(@user, @selected_repo)
+          puts "#{@user.name} is already working on #{@selected_repo.project_name}"
+          puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        else
+          @user.repos << @selected_repo
+          puts "#{@user.name} was successfully added to #{@selected_repo.project_name}"
+          puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        end
       end
     end
     menu

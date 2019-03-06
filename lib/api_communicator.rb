@@ -8,7 +8,7 @@ def get_data(user)
   response_string = RestClient.get("https://api.github.com/users/#{user}/repos")
   response_hash = JSON.parse(response_string)
 
-  # binding.pry
+
   username = response_hash.first["owner"]["login"]
 
   user_info = {
@@ -25,17 +25,13 @@ def get_data(user)
   response_hash.each do |repo|
     repo_info << {
                   project_name: repo["name"],
-                  description: "",
+                  description: repo["description"],
                   repo_url: repo["html_url"]
                   }
   end
 
   repo_info.each do |repo|
-    # binding.pry
     new_repo = Repo.create(project_name: repo[:project_name], description: repo[:description], repo_url: repo[:repo_url] )
     user.repos << new_repo
   end
-
-  # user.repos << repo
-  # binding.pry
 end
