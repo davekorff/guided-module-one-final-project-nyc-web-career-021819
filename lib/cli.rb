@@ -64,11 +64,13 @@ class CommandLineInterface
       {description: "Delete repo", 
       action: delete_repo},
       {description: "Return to Menu", 
-      action: do_nothing}
+      action: do_nothing},
+      {description: "Show and open Repo URL", 
+        action: show_repo_url}
     ]
 
     @keyword_actions = [
-      {description: "Shows and Opens Repo Url", 
+      {description: "Show and open Repo URL", 
       action: show_repo_url}, 
       {description: "Update Repo Name", 
       action: update_repo_name},
@@ -94,7 +96,7 @@ class CommandLineInterface
   #Main Menu
   def menu
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    puts "What would you like to do? (enter number)"
+    puts "What would you like to do? (choose number)"
     puts "Enter 'exit' at anytime to close application"
     puts
     puts "1. Find all repos by username"
@@ -130,6 +132,7 @@ class CommandLineInterface
   def gets_user_input
     input = gets.chomp
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    # binding.pry
 
     if input == "exit"
       exit
