@@ -47,7 +47,7 @@ class CommandLineInterface
     }
 
     update_repo_name = -> {
-      puts "Enter new Repo name:"
+      puts "Enter new repo name:"
       input = gets_user_input
       @selected_repo.update_attribute(:project_name, input)
       puts "Updated repo name to #{@selected_repo.project_name}"
@@ -101,7 +101,7 @@ class CommandLineInterface
   def menu
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "What would you like to do? (choose number)"
-    puts "Enter 'exit' at anytime to close application"
+    puts "Enter 'exit' at any time to close the application"
     puts
     puts "1. Find all repos by username"
     puts "2. Search repos by keyword"
@@ -175,7 +175,7 @@ class CommandLineInterface
       get_data(input)
     end
     if find_user(input) == false
-      puts "That user doesn't exist or doesn't have any repos"
+      puts "That user doesn't exist or doesn't have any public repos"
       menu
     else
       @user = find_user(input)
@@ -208,7 +208,7 @@ class CommandLineInterface
       puts "Repo name: #{@repos[input - 1].project_name}"
       puts "Description: #{@repos[input - 1].description}"
       puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-      puts "What would you like to do?"
+      puts "What would you like to do? (choose number)"
       @user_actions.each_with_index do |user_action, index|
         puts "#{index + 1}. #{user_action[:description]}"
       end
@@ -228,7 +228,7 @@ class CommandLineInterface
       #Making a call to the API
       search_github(input)
       @repos_by_keyword = find_repo_by_keyword(input)
-      if @repos_by_keyword.empty? 
+      if @repos_by_keyword.empty?
         puts "There are no repos with '#{input}' in the description"
         find_by_keyword_menu
       else
