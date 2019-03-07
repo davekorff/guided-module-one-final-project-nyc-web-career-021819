@@ -5,7 +5,7 @@ class CommandLineInterface
   def initialize
     remove_user_from_repo = -> {
       UserRepo.destroy(@user_repo.id)
-      puts "Deleted #{@user.name} from #{@selected_repo.project_name}!"
+      puts "Deleted #{@user.name} from #{@selected_repo.project_name}"
     }
     add_user_to_repo = -> {
       puts "Who do you want to add? (enter username with *EXACT* spelling and capitalization):"
@@ -33,9 +33,9 @@ class CommandLineInterface
       input = gets_user_input[0].downcase
       if input == "y"
         Repo.destroy(@selected_repo.id)
-        puts "Deleted #{@selected_repo.project_name}!"
+        puts "Deleted #{@selected_repo.project_name}"
       else
-        puts "Good idea."
+        puts "Good idea"
       end
     }
     do_nothing = -> {}
@@ -63,22 +63,22 @@ class CommandLineInterface
     @user_actions = [
       {description: "Remove current user from repo",
       action: remove_user_from_repo},
-      {description: "Add User to repo",
+      {description: "Add user to repo",
       action: add_user_to_repo},
       {description: "Delete repo",
       action: delete_repo},
-      {description: "Return to Menu",
+      {description: "Return to menu",
       action: do_nothing},
-      {description: "Show and open Repo URL",
+      {description: "Show and open repo URL",
         action: show_repo_url}
     ]
 
     @keyword_actions = [
-      {description: "Show and open Repo URL",
+      {description: "Show and open repo URL",
       action: show_repo_url},
-      {description: "Update Repo Name",
+      {description: "Update repo name",
       action: update_repo_name},
-      {description: "Updates Repo Description",
+      {description: "Update repo description",
       action: update_repo_description},
     ]
   end
@@ -94,7 +94,7 @@ class CommandLineInterface
     puts
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "Welcome to GitHub Repo Explorer"
-    puts "We can help you find github repos."
+    puts "We can help you find Github repos"
   end
 
   #Main Menu
@@ -107,7 +107,7 @@ class CommandLineInterface
     puts "2. Search repos by keyword"
     puts "3. Find all collaborators for a repo"
           # *TO DO* add functionality to add users to repo
-    puts "4. Create new user in local database"
+    puts "4. Create a new user in the local database"
     puts
     main_menu_loop
   end
@@ -167,7 +167,7 @@ class CommandLineInterface
   #Find by username Menu options
   def find_by_username_menu
     puts
-    puts "Enter a github username with *EXACT* capitalization to list that user's repos:"
+    puts "Enter a Github username with *EXACT* capitalization to list that user's repos:"
     input = gets_user_input
     #if username exists in our DB, don't make API call.
     if !username_exists?(input)
@@ -175,7 +175,7 @@ class CommandLineInterface
       get_data(input)
     end
     if find_user(input) == false
-      puts "That user either doesn't exist, doesn't exist by that exact username, or doesn't have any repos."
+      puts "That user doesn't exist or doesn't have any repos"
       menu
     else
       @user = find_user(input)
@@ -200,7 +200,7 @@ class CommandLineInterface
     puts "Enter repo number to view repo details"
     input = gets_user_input.to_i
     if input > @repos.count
-      puts "That repo doesn't exist."
+      puts "That repo doesn't exist"
       find_by_username_sub_menu
     else
       @selected_repo = @repos[input- 1]
@@ -222,7 +222,7 @@ class CommandLineInterface
     search_github(input)
     @repos_by_keyword = find_repo_by_keyword(input)
     if @repos_by_keyword.empty?
-      puts "There are no repos with '#{input}' in the description."
+      puts "There are no repos with '#{input}' in the description"
       find_by_keyword_menu
     else
       @repos_by_keyword.each_with_index do |repo, index|
@@ -238,7 +238,7 @@ class CommandLineInterface
     input = gets_user_input.to_i
     @selected_repo = @repos_by_keyword[input - 1]
     if input > @repos_by_keyword.count
-      puts "That repo doesn't exist."
+      puts "That repo doesn't exist"
       find_by_keyword_sub_menu
     else
       puts "#{@selected_repo.project_name} - #{@selected_repo.description}"
@@ -275,7 +275,7 @@ class CommandLineInterface
     #Todo- make the user only able to input a number from 1-5
     mod = gets_user_input
     new_user = User.create(name: full_name, mod: mod, github_username: github_username, profile_url: "https://github.com/#{github_username}")
-    puts "Created #{github_username}!"
+    puts "Created #{github_username}"
     menu
   end
 
