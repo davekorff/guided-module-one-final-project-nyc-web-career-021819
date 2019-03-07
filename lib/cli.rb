@@ -163,8 +163,11 @@ class CommandLineInterface
     puts
     puts "Enter a github username **WITH EXACT CAPITALIZATION** to list that user's repos:"
     input = gets_user_input
-    #making an API call
-    get_data(input)
+    #if username exists in our DB, don't make API call. 
+    if !username_exists?(input)
+      #making an API call
+      get_data(input)
+    end
     if find_user(input) == false
       puts "That user either doesn't exist, doesn't exist by that exact username, or doesn't have any repos."
       menu
