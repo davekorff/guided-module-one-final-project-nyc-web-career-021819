@@ -107,25 +107,23 @@ class CommandLineInterface
   end
 
   def main_menu_loop
-    catch (:stop) do
-      input = gets_user_input
-        case input.to_i
-        when 1
-          find_by_username_menu
-          input = gets_user_input
-          user_actions(input.to_i)
-          menu
-        when 2
-          find_by_keyword_menu
-          input = gets_user_input
-          keyword_actions(input.to_i)
-          menu
-        when 3
-          find_all_collabs_for_repo
-        when 4
-          create_new_user
-        end
-    end
+    input = gets_user_input
+      case input.to_i
+      when 1
+        find_by_username_menu
+        input = gets_user_input
+        user_actions(input.to_i)
+        menu
+      when 2
+        find_by_keyword_menu
+        input = gets_user_input
+        keyword_actions(input.to_i)
+        menu
+      when 3
+        find_all_collabs_for_repo
+      when 4
+        create_new_user
+      end
   end
 
   #gets the user input. If input is "exit", leave the program.
@@ -134,7 +132,7 @@ class CommandLineInterface
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
     if input == "exit"
-      throw :stop
+      exit
     end
     
     return input
