@@ -267,23 +267,26 @@ class CommandLineInterface
     puts "Enter new user's full name:"
     full_name = gets_user_input
     puts "Enter new user's mod:"
+    #Todo- make the user only able to input a number from 1-5
     mod = gets_user_input
     new_user = User.create(name: full_name, mod: mod, github_username: github_username, profile_url: "https://github.com/#{github_username}")
     puts "Created #{github_username}!"
     menu
   end
 
+  #Finds the USER_REPO for a given user and repo
   def find_user_repo(user, repo)
     UserRepo.find_by("user_id = ? AND repo_id = ?", user.id, repo.id)
   end
 
+  #Returns all of a user's repos
   def find_repos(user)
     user.repos
   end
 
+  #Displays repos if there are any repos. 
   def show_repos(repos)
     if repos.length == 0
-      # puts "#{@user.name} has no repos"
       false
     else
       repos.each_with_index do |repo, index|
@@ -292,6 +295,7 @@ class CommandLineInterface
     end
   end
 
+  #Selects all repos that have the given keyword in the description
   def find_repo_by_keyword(keyword)
     Repo.all.select do |repo|
       if repo.description != nil
@@ -300,6 +304,7 @@ class CommandLineInterface
     end
   end
 
+  #Finds the first repo with a given project name
   def find_repo_by_project_name(project_name)
     Repo.all.find_by(project_name: project_name)
   end

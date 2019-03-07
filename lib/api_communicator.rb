@@ -11,7 +11,6 @@ def get_data(user)
       response_string = response.body
     end
   end
-    # response_string = RestClient.get("https://api.github.com/users/#{user}/repos")
   
   response_hash = JSON.parse(response_string)
 
@@ -44,19 +43,20 @@ end
 
 
 def search_github(keyword)
-  if RestClient.get("https://api.github.com/search/repositories?q=#{keyword}&sort=stars&order=desc") {|response, request, result| response }.code != 200
-    return
-  else
-    response_string = RestClient.get("https://api.github.com/search/repositories?q=#{keyword}&sort=stars&order=desc")
+  response_string = ""
+  RestClient.get("https://api.github.com/search/repositories?q=#{keyword}&sort=stars&order=desc") do |response, request, result|
+    if response.code != 200
+      return
+    else
+    response_string = response.body
+    end
   end
 
   response_hash = JSON.parse(response_string)
 
   response_hash["items"].each do |repo|
-    # binding.pry
-    hi = Repo.find_or_create_by(project_name: repo["name"], description: repo["description"],repo_url: repo["html_url"])
-    # binding.pry
-    hi.description ||= keyword
-    hi.save
+    new_repo = Repo.find_or_create_by(project_name: repo["name"], description: repo["description"],repo_url: repo["html_url"])
+    new_repo.description ||= keyword
+    new_repo.save
   end
 end
