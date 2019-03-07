@@ -95,12 +95,13 @@ class CommandLineInterface
   def menu
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "What would you like to do? (enter number)"
+    puts "Enter 'exit' at anytime to close application"
     puts
     puts "1. Find all repos by username"
     puts "2. Search repos by keyword"
     puts "3. Find all collaborators for a repo"
           # *TO DO* add functionality to add users to repo
-    puts "4. Create new user"
+    puts "4. Create new user in local database"
     puts
     main_menu_loop
   end
@@ -210,7 +211,7 @@ class CommandLineInterface
   end
 
   def find_by_keyword_menu
-    puts "Enter keyword:"
+    puts "Enter keyword (one word only please):"
     input = gets_user_input.downcase
     #Making a call to the API
     search_github(input)
@@ -250,7 +251,7 @@ class CommandLineInterface
       puts "No repo found"
     else
       repo_by_project_name.users.each do |user|
-        puts user.name
+        puts user.github_username
       end
     end
     menu

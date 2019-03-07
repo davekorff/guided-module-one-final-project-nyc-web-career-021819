@@ -53,6 +53,10 @@ def search_github(keyword)
   response_hash = JSON.parse(response_string)
 
   response_hash["items"].each do |repo|
-    Repo.find_or_create_by(project_name: repo["name"], description: "#{keyword}", repo_url: repo["html_url"])
+    # binding.pry
+    hi = Repo.find_or_create_by(project_name: repo["name"], description: repo["description"],repo_url: repo["html_url"])
+    # binding.pry
+    hi.description ||= keyword
+    hi.save
   end
 end
