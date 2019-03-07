@@ -70,7 +70,7 @@ class CommandLineInterface
       {description: "Return to menu",
       action: do_nothing},
       {description: "Show and open repo URL",
-        action: show_repo_url}
+      action: show_repo_url}
     ]
 
     @keyword_actions = [
@@ -218,16 +218,24 @@ class CommandLineInterface
   def find_by_keyword_menu
     puts "Enter keyword (one word or hyphenated words only, please):"
     input = gets_user_input.downcase
-    #Making a call to the API
-    search_github(input)
     @repos_by_keyword = find_repo_by_keyword(input)
-    if @repos_by_keyword.empty?
-      puts "There are no repos with '#{input}' in the description"
-      find_by_keyword_menu
-    else
+    if !@repos_by_keyword.empty?
       @repos_by_keyword.each_with_index do |repo, index|
         puts "#{index + 1}. #{repo.project_name}"
         puts "Description: #{repo.description}"
+      end
+    else
+      #Making a call to the API
+      search_github(input)
+      @repos_by_keyword = find_repo_by_keyword(input)
+      if @repos_by_keyword.empty? 
+        puts "There are no repos with '#{input}' in the description"
+        find_by_keyword_menu
+      else
+        @repos_by_keyword.each_with_index do |repo, index|
+          puts "#{index + 1}. #{repo.project_name}"
+          puts "Description: #{repo.description}"
+        end
       end
     end
     find_by_keyword_sub_menu
@@ -248,6 +256,8 @@ class CommandLineInterface
     end
   end
 
+  #It will only show multiple users if we added them in this program. We only make a check in our local DB for repo.
+  #Todo- Find a way to get the collaborators for a repo from Github AP
   def find_all_collabs_for_repo
     puts "Enter a repo name with *EXACT* spelling and capitalization:"
     input = gets_user_input
