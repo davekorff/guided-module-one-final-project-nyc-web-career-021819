@@ -26,7 +26,7 @@ def get_data(user)
   user = User.find_or_create_by(name: user_info[:name], mod: user_info[:mod], github_username: user_info[:github_username], profile_url: user_info[:profile_url])
 
   repo_info = []
-
+                #use a map here 
   response_hash.each do |repo|
     repo_info << {
                   project_name: repo["name"],

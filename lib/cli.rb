@@ -1,6 +1,63 @@
 require_relative '../config/environment'
 
 class CommandLineInterface
+
+  def initialize
+    remove_user_from_repo = -> {    
+      UserRepo.destroy(@user_repo.id)
+      puts "Deleted #{@user.name} from #{@selected_repo.project_name}!"
+    }
+    add_user_to_repo = -> {
+      puts "Who do you want to add? (enter username with *EXACT* spelling and capitalization):"
+      input = gets_user_input
+      @user = find_user(input)
+      if @user == false
+        puts "That user doesn't exist"
+      else
+        if username_exists?(@user.github_username)
+          if already_on_repo?(@user, @selected_repo)
+            puts "#{@user.name} is already working on #{@selected_repo.project_name}"
+          else
+            @user.repos << @selected_repo
+            puts "#{@user.name} was successfully added to #{@selected_repo.project_name}"
+          end
+        end
+      end
+    }
+    delete_repo = -> {
+      puts "Are you sure you want to delete #{@selected_repo.project_name}? (y/n)"
+      input = gets_user_input[0].downcase
+      if input == "y"
+        Repo.destroy(@selected_repo.id)
+        puts "Deleted #{@selected_repo.project_name}!"
+      else
+        puts "Good idea."
+      end
+    }
+    do_nothing = -> {}
+    
+    @user_actions = [
+      {description: "Remove current user from repo", 
+      action: remove_user_from_repo}, 
+      {description: "Add User to repo", 
+      action: add_user_to_repo},
+      {description: "Delete repo", 
+      action: delete_repo},
+      {description: "Return to Menu", 
+      action: do_nothing}]
+  end
+
+  def user_actions(input)
+    @user_actions[input - 1][:action].()
+  end
+
+  #Starts Github Repo Explorer
+  def run
+    greet
+    menu
+  end
+
+  #Greeting Screen
   def greet
     puts
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -8,36 +65,7 @@ class CommandLineInterface
     puts "We can help you find github repos."
   end
 
-  def gets_user_input
-    @input = gets.chomp
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    if @input == "exit"
-      throw :stop
-    end
-    return @input
-  end
-
-  def username_exists?(github_username)
-    !!User.all.find_by(github_username: github_username)
-  end
-
-  def already_on_repo?(user, repo)
-    repo.users.include?(user)
-  end
-
-  def find_user(github_username)
-    if username_exists?(github_username)
-      User.all.find_by(github_username: github_username)
-    else
-      false
-    end
-  end
-
-  def run
-    greet
-    menu
-  end
-
+  #Main Menu
   def menu
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "What would you like to do? (enter number)"
@@ -51,6 +79,66 @@ class CommandLineInterface
     main_menu_loop
   end
 
+  def main_menu_loop
+    catch (:stop) do
+      input = gets_user_input
+        case input.to_i
+        when 1
+          find_by_username_menu
+          input = gets_user_input
+          user_actions(input.to_i)
+          menu
+        when 2
+          find_by_keyword_menu
+          input = gets_user_input
+          case input.to_i
+          when 1
+            show_repo_url
+          when 2
+            update_repo_name
+          when 3
+            update_repo_description
+          end
+        when 3
+          find_all_collabs_for_repo
+        when 4
+          create_new_user
+        end
+    end
+  end
+
+  #gets the user input. If input is "exit", leave the program.
+  def gets_user_input
+    input = gets.chomp
+    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
+    if input == "exit"
+      throw :stop
+    end
+    
+    return input
+  end
+
+  #checks to see if a github username exists
+  def username_exists?(github_username)
+    !!User.all.find_by(github_username: github_username)
+  end
+
+  #checks to see if a repo has a user. 
+  def already_on_repo?(user, repo)
+    repo.users.include?(user)
+  end
+
+  #finds a user through github username
+  def find_user(github_username)
+    if username_exists?(github_username)
+      User.all.find_by(github_username: github_username)
+    else
+      false
+    end
+  end
+
+  #Find by username Menu options
   def find_by_username_menu
     puts
     puts "Enter a github username **WITH EXACT CAPITALIZATION** to list that user's repos:"
@@ -73,60 +161,59 @@ class CommandLineInterface
 
   def find_by_username_sub_menu
     puts "Enter repo number to view repo details"
-    input = gets_user_input
-    if input.to_i > @repos.count
+    input = gets_user_input.to_i
+    if input > @repos.count
       puts "That repo doesn't exist."
       find_by_username_sub_menu
     else
-      @selected_repo = @repos[input.to_i - 1]
+      @selected_repo = @repos[input- 1]
       @user_repo = find_user_repo(@user, @selected_repo)
-      puts "Repo name: #{@repos[input.to_i - 1].project_name}"
-      puts "Description: #{@repos[input.to_i - 1].description}"
+      puts "Repo name: #{@repos[input - 1].project_name}"
+      puts "Description: #{@repos[input - 1].description}"
       puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       puts "What would you like to do?"
-      puts "1. Remove current user from repo"
-      puts "2. Add another user to repo"
-      puts "3. Delete repo"
-      puts "4. Return to main menu"
-    end
-  end
-
-  def remove_user_from_repo
-    UserRepo.destroy(@user_repo.id)
-    puts "Deleted #{@user.name} from #{@selected_repo.project_name}!"
-    menu
-  end
-
-  def add_user_to_repo
-    puts "Who do you want to add? (enter username with *EXACT* spelling and capitalization):"
-    input = gets_user_input
-    @user = find_user(input)
-    if @user == false
-      puts "That user doesn't exist"
-    else
-      if username_exists?(@user.github_username)
-        if already_on_repo?(@user, @selected_repo)
-          puts "#{@user.name} is already working on #{@selected_repo.project_name}"
-        else
-          @user.repos << @selected_repo
-          puts "#{@user.name} was successfully added to #{@selected_repo.project_name}"
-        end
+      @user_actions.each_with_index do |user_action, index|
+        puts "#{index + 1}. #{user_action[:description]}"
       end
     end
-    menu
   end
 
-  def delete_repo
-    puts "Are you sure you want to delete #{@selected_repo.project_name}? (y/n)"
-    input = gets_user_input[0].downcase
-    if input == "y"
-      Repo.destroy(@selected_repo.id)
-      puts "Deleted #{@selected_repo.project_name}!"
-    else
-      puts "Good idea."
-    end
-    menu
-  end
+  # def remove_user_from_repo
+  #   UserRepo.destroy(@user_repo.id)
+  #   puts "Deleted #{@user.name} from #{@selected_repo.project_name}!"
+  #   menu
+  # end
+
+  # def add_user_to_repo
+  #   puts "Who do you want to add? (enter username with *EXACT* spelling and capitalization):"
+  #   input = gets_user_input
+  #   @user = find_user(input)
+  #   if @user == false
+  #     puts "That user doesn't exist"
+  #   else
+  #     if username_exists?(@user.github_username)
+  #       if already_on_repo?(@user, @selected_repo)
+  #         puts "#{@user.name} is already working on #{@selected_repo.project_name}"
+  #       else
+  #         @user.repos << @selected_repo
+  #         puts "#{@user.name} was successfully added to #{@selected_repo.project_name}"
+  #       end
+  #     end
+  #   end
+  #   menu
+  # end
+
+  # def delete_repo
+  #   puts "Are you sure you want to delete #{@selected_repo.project_name}? (y/n)"
+  #   input = gets_user_input[0].downcase
+  #   if input == "y"
+  #     Repo.destroy(@selected_repo.id)
+  #     puts "Deleted #{@selected_repo.project_name}!"
+  #   else
+  #     puts "Good idea."
+  #   end
+  #   menu
+  # end
 
   def find_by_keyword_menu
     puts "Enter keyword:"
@@ -212,43 +299,6 @@ class CommandLineInterface
     new_user = User.create(name: full_name, mod: mod, github_username: github_username, profile_url: "https://github.com/#{github_username}")
     puts "Created #{github_username}!"
     menu
-  end
-
-  def main_menu_loop
-    catch (:stop) do
-      gets_user_input
-        case @input.to_i
-        when 1
-          find_by_username_menu
-          gets_user_input
-
-            case @input.to_i
-            when 1
-              remove_user_from_repo
-            when 2
-              add_user_to_repo
-            when 3
-              delete_repo
-            when 4
-              menu
-            end
-        when 2
-          find_by_keyword_menu
-          gets_user_input
-            case @input.to_i
-            when 1
-              show_repo_url
-            when 2
-              update_repo_name
-            when 3
-              update_repo_description
-            end
-        when 3
-          find_all_collabs_for_repo
-        when 4
-          create_new_user
-        end
-    end
   end
 
   def find_user_repo(user, repo)
