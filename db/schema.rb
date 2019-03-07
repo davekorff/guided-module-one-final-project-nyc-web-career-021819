@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190304195036) do
+ActiveRecord::Schema.define(version: 2019_03_07_183302) do
 
   create_table "repos", force: :cascade do |t|
     t.string "project_name"
-    t.text   "description"
+    t.string "description"
     t.string "repo_url"
   end
 
@@ -24,10 +24,10 @@ ActiveRecord::Schema.define(version: 20190304195036) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string  "name"
+    t.string "name"
     t.integer "mod"
-    t.string  "github_username"
-    t.string  "profile_url"
+    t.string "github_username"
+    t.string "profile_url"
   end
 
 end
