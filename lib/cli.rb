@@ -10,6 +10,10 @@ class CommandLineInterface
     add_user_to_repo = -> {
       puts "Who do you want to add? (enter username with *EXACT* spelling and capitalization):"
       input = gets_user_input
+      if !username_exists?(input)
+        #making an API call
+        get_data(input)
+      end
       @user = find_user(input)
       if @user == false
         puts "That user doesn't exist"
