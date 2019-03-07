@@ -1,6 +1,5 @@
 require_relative '../config/environment'
 
-
 class CommandLineInterface
   def greet
     puts
@@ -12,6 +11,9 @@ class CommandLineInterface
   def gets_user_input
     @input = gets.chomp
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    if @input == "exit"
+      throw :stop
+    end
     return @input
   end
 
@@ -213,39 +215,39 @@ class CommandLineInterface
   end
 
   def main_menu_loop
-      while gets_user_input != "exit"
-      case @input.to_i
-      when 1
-        find_by_username_menu
-        while gets_user_input != "exit"
-          case @input.to_i
-          when 1
-            remove_user_from_repo
-          when 2
-            add_user_to_repo
-          when 3
-            delete_repo
-          when 4
-            menu
-          end
+    catch (:stop) do
+      gets_user_input
+        case @input.to_i
+        when 1
+          find_by_username_menu
+          gets_user_input
+
+            case @input.to_i
+            when 1
+              remove_user_from_repo
+            when 2
+              add_user_to_repo
+            when 3
+              delete_repo
+            when 4
+              menu
+            end
+        when 2
+          find_by_keyword_menu
+          gets_user_input
+            case @input.to_i
+            when 1
+              show_repo_url
+            when 2
+              update_repo_name
+            when 3
+              update_repo_description
+            end
+        when 3
+          find_all_collabs_for_repo
+        when 4
+          create_new_user
         end
-      when 2
-        find_by_keyword_menu
-        while gets_user_input != "exit"
-          case @input.to_i
-          when 1
-            show_repo_url
-          when 2
-            update_repo_name
-          when 3
-            update_repo_description
-          end
-        end
-      when 3
-        find_all_collabs_for_repo
-      when 4
-        create_new_user
-      end
     end
   end
 
@@ -284,9 +286,4 @@ class CommandLineInterface
   def find_repo_by_project_name(project_name)
     Repo.all.find_by(project_name: project_name)
   end
-
-  # def user_input
-  #   @last_input = gets.strip
-  # end
-
 end
