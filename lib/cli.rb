@@ -35,6 +35,26 @@ class CommandLineInterface
       end
     }
     do_nothing = -> {}
+
+    show_repo_url = -> {
+      puts
+      puts "#{@selected_repo.project_name} - #{@selected_repo.repo_url}"
+      `open #{@selected_repo.repo_url}`
+    }
+
+    update_repo_name = -> {
+      puts "Enter new Repo name:"
+      input = gets_user_input
+      @selected_repo.update_attribute(:project_name, input)
+      puts "Updated repo name to #{@selected_repo.project_name}"
+    }
+
+    update_repo_description = -> {
+      puts "Enter new Repo description:"
+      input = gets_user_input
+      @selected_repo.update_attribute(:description, input)
+      puts "Updated description to #{@selected_repo.description}"
+    }
     
     @user_actions = [
       {description: "Remove current user from repo", 
@@ -44,11 +64,17 @@ class CommandLineInterface
       {description: "Delete repo", 
       action: delete_repo},
       {description: "Return to Menu", 
-      action: do_nothing}]
-  end
+      action: do_nothing}
+    ]
 
-  def user_actions(input)
-    @user_actions[input - 1][:action].()
+    @keyword_actions = [
+      {description: "Shows and Opens Repo Url", 
+      action: show_repo_url}, 
+      {description: "Update Repo Name", 
+      action: update_repo_name},
+      {description: "Updates Repo Description", 
+      action: update_repo_description},
+    ]
   end
 
   #Starts Github Repo Explorer
@@ -91,14 +117,8 @@ class CommandLineInterface
         when 2
           find_by_keyword_menu
           input = gets_user_input
-          case input.to_i
-          when 1
-            show_repo_url
-          when 2
-            update_repo_name
-          when 3
-            update_repo_description
-          end
+          keyword_actions(input.to_i)
+          menu
         when 3
           find_all_collabs_for_repo
         when 4
@@ -159,6 +179,14 @@ class CommandLineInterface
     find_by_username_sub_menu
   end
 
+  def user_actions(input)
+    @user_actions[input - 1][:action].()
+  end
+
+  def keyword_actions(input)
+    @keyword_actions[input - 1][:action].()
+  end
+
   def find_by_username_sub_menu
     puts "Enter repo number to view repo details"
     input = gets_user_input.to_i
@@ -177,43 +205,6 @@ class CommandLineInterface
       end
     end
   end
-
-  # def remove_user_from_repo
-  #   UserRepo.destroy(@user_repo.id)
-  #   puts "Deleted #{@user.name} from #{@selected_repo.project_name}!"
-  #   menu
-  # end
-
-  # def add_user_to_repo
-  #   puts "Who do you want to add? (enter username with *EXACT* spelling and capitalization):"
-  #   input = gets_user_input
-  #   @user = find_user(input)
-  #   if @user == false
-  #     puts "That user doesn't exist"
-  #   else
-  #     if username_exists?(@user.github_username)
-  #       if already_on_repo?(@user, @selected_repo)
-  #         puts "#{@user.name} is already working on #{@selected_repo.project_name}"
-  #       else
-  #         @user.repos << @selected_repo
-  #         puts "#{@user.name} was successfully added to #{@selected_repo.project_name}"
-  #       end
-  #     end
-  #   end
-  #   menu
-  # end
-
-  # def delete_repo
-  #   puts "Are you sure you want to delete #{@selected_repo.project_name}? (y/n)"
-  #   input = gets_user_input[0].downcase
-  #   if input == "y"
-  #     Repo.destroy(@selected_repo.id)
-  #     puts "Deleted #{@selected_repo.project_name}!"
-  #   else
-  #     puts "Good idea."
-  #   end
-  #   menu
-  # end
 
   def find_by_keyword_menu
     puts "Enter keyword:"
@@ -235,40 +226,17 @@ class CommandLineInterface
 
   def find_by_keyword_sub_menu
     puts "Enter repo number to view repo details"
-    input = gets_user_input
-    @selected_repo = @repos_by_keyword[input.to_i - 1]
-    if input.to_i > @repos_by_keyword.count
+    input = gets_user_input.to_i
+    @selected_repo = @repos_by_keyword[input - 1]
+    if input > @repos_by_keyword.count
       puts "That repo doesn't exist."
       find_by_keyword_sub_menu
     else
       puts "#{@selected_repo.project_name} - #{@selected_repo.description}"
-      puts "1. Display repo URL and open repo in your browser"
-      puts "2. Update repo name"
-      puts "3. Update repo description"
+      @keyword_actions.each_with_index do |user_action, index|
+        puts "#{index + 1}. #{user_action[:description]}"
+      end
     end
-  end
-
-  def show_repo_url
-    puts
-    puts "#{@selected_repo.project_name} - #{@selected_repo.repo_url}"
-    `open #{@selected_repo.repo_url}`
-    menu
-  end
-
-  def update_repo_name
-    puts "Enter new Repo name:"
-    input = gets_user_input
-    @selected_repo.update_attribute(:project_name, input)
-    puts "Updated repo name to #{@selected_repo.project_name}"
-    menu
-  end
-
-  def update_repo_description
-    puts "Enter new Repo description:"
-    input = gets_user_input
-    @selected_repo.update_attribute(:description, input)
-    puts "Updated description to #{@selected_repo.description}"
-    menu
   end
 
   def find_all_collabs_for_repo
@@ -304,11 +272,6 @@ class CommandLineInterface
   def find_user_repo(user, repo)
     UserRepo.find_by("user_id = ? AND repo_id = ?", user.id, repo.id)
   end
-
-  # def remove_user_from_repo(user_repo)
-  #   user_repo.destroy
-  # end
-
 
   def find_repos(user)
     user.repos

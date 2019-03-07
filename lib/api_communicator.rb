@@ -1,38 +1,39 @@
 require 'rest-client'
 require 'json'
 
-
-
 def get_data(user)
 
-  if RestClient.get("https://api.github.com/users/#{user}/repos") {|response, request, result| response }.code != 200
-    return
-  else
-    response_string = RestClient.get("https://api.github.com/users/#{user}/repos")
+  response_string = ""
+  RestClient.get("https://api.github.com/users/#{user}/repos") do |response, request, result| 
+    if response.code != 200
+      return
+    else
+      response_string = response.body
+    end
   end
-
+    # response_string = RestClient.get("https://api.github.com/users/#{user}/repos")
+  
   response_hash = JSON.parse(response_string)
 
   if response_hash.empty?
     return
   end
-    user_info = {
-                  name: response_hash.first["owner"]["login"],
-                  mod: 0,
-                  github_username: response_hash.first["owner"]["login"],
-                  profile_url: response_hash.first["owner"]["html_url"],
-                }
+  
+  user_info = {
+                name: response_hash.first["owner"]["login"],
+                mod: 0,
+                github_username: response_hash.first["owner"]["login"],
+                profile_url: response_hash.first["owner"]["html_url"],
+              }
 
   user = User.find_or_create_by(name: user_info[:name], mod: user_info[:mod], github_username: user_info[:github_username], profile_url: user_info[:profile_url])
 
-  repo_info = []
-                #use a map here 
-  response_hash.each do |repo|
-    repo_info << {
-                  project_name: repo["name"],
-                  description: repo["description"],
-                  repo_url: repo["html_url"]
-                  }
+  repo_info = response_hash.map do |repo|
+    {
+      project_name: repo["name"],
+      description: repo["description"],
+      repo_url: repo["html_url"]
+    }
   end
 
   repo_info.each do |repo|
