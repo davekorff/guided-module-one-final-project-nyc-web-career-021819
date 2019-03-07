@@ -216,7 +216,7 @@ class CommandLineInterface
   end
 
   def find_by_keyword_menu
-    puts "Enter keyword (one word only please):"
+    puts "Enter keyword (one word or hyphenated words only, please):"
     input = gets_user_input.downcase
     #Making a call to the API
     search_github(input)
