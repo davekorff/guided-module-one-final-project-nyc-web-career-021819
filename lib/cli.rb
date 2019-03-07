@@ -249,7 +249,7 @@ class CommandLineInterface
   end
 
   def find_all_collabs_for_repo
-    puts "Enter a repo name (exact spelling and capitalization matter):"
+    puts "Enter a repo name with *EXACT* spelling and capitalization:"
     input = gets_user_input
     repo_by_project_name = find_repo_by_project_name(input)
     if repo_by_project_name == nil
