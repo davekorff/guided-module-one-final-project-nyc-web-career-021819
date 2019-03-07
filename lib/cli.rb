@@ -3,7 +3,7 @@ require_relative '../config/environment'
 class CommandLineInterface
 
   def initialize
-    remove_user_from_repo = -> {    
+    remove_user_from_repo = -> {
       UserRepo.destroy(@user_repo.id)
       puts "Deleted #{@user.name} from #{@selected_repo.project_name}!"
     }
@@ -59,26 +59,26 @@ class CommandLineInterface
       @selected_repo.update_attribute(:description, input)
       puts "Updated description to #{@selected_repo.description}"
     }
-    
+
     @user_actions = [
-      {description: "Remove current user from repo", 
-      action: remove_user_from_repo}, 
-      {description: "Add User to repo", 
+      {description: "Remove current user from repo",
+      action: remove_user_from_repo},
+      {description: "Add User to repo",
       action: add_user_to_repo},
-      {description: "Delete repo", 
+      {description: "Delete repo",
       action: delete_repo},
-      {description: "Return to Menu", 
+      {description: "Return to Menu",
       action: do_nothing},
-      {description: "Show and open Repo URL", 
+      {description: "Show and open Repo URL",
         action: show_repo_url}
     ]
 
     @keyword_actions = [
-      {description: "Show and open Repo URL", 
-      action: show_repo_url}, 
-      {description: "Update Repo Name", 
+      {description: "Show and open Repo URL",
+      action: show_repo_url},
+      {description: "Update Repo Name",
       action: update_repo_name},
-      {description: "Updates Repo Description", 
+      {description: "Updates Repo Description",
       action: update_repo_description},
     ]
   end
@@ -141,7 +141,7 @@ class CommandLineInterface
     if input == "exit"
       exit
     end
-    
+
     return input
   end
 
@@ -150,7 +150,7 @@ class CommandLineInterface
     !!User.all.find_by(github_username: github_username)
   end
 
-  #checks to see if a repo has a user. 
+  #checks to see if a repo has a user.
   def already_on_repo?(user, repo)
     repo.users.include?(user)
   end
@@ -167,9 +167,9 @@ class CommandLineInterface
   #Find by username Menu options
   def find_by_username_menu
     puts
-    puts "Enter a github username **WITH EXACT CAPITALIZATION** to list that user's repos:"
+    puts "Enter a github username with *EXACT* capitalization to list that user's repos:"
     input = gets_user_input
-    #if username exists in our DB, don't make API call. 
+    #if username exists in our DB, don't make API call.
     if !username_exists?(input)
       #making an API call
       get_data(input)
@@ -289,7 +289,7 @@ class CommandLineInterface
     user.repos
   end
 
-  #Displays repos if there are any repos. 
+  #Displays repos if there are any repos.
   def show_repos(repos)
     if repos.length == 0
       false
