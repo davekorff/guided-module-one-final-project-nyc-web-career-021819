@@ -63,7 +63,7 @@ class CommandLineInterface
     @user_actions = [
       {description: "Remove current user from repo",
       action: remove_user_from_repo},
-      {description: "Add user to repo",
+      {description: "Add collaborator to repo",
       action: add_user_to_repo},
       {description: "Delete repo",
       action: delete_repo},
@@ -100,7 +100,7 @@ class CommandLineInterface
   #Main Menu
   def menu
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    puts "What would you like to do? (choose number)"
+    puts "What would you like to do? (enter a number)"
     puts "Enter 'exit' at any time to close the application"
     puts
     puts "1. Find all repos by username"
@@ -223,6 +223,7 @@ class CommandLineInterface
       @repos_by_keyword.each_with_index do |repo, index|
         puts "#{index + 1}. #{repo.project_name}"
         puts "Description: #{repo.description}"
+        puts "-----------------------------------------------------------------"
       end
     else
       #Making a call to the API
@@ -235,6 +236,7 @@ class CommandLineInterface
         @repos_by_keyword.each_with_index do |repo, index|
           puts "#{index + 1}. #{repo.project_name}"
           puts "Description: #{repo.description}"
+          puts "---------------------------------------------------------------"
         end
       end
     end
@@ -277,6 +279,7 @@ class CommandLineInterface
     github_username = gets_user_input
     if username_exists?(github_username)
       puts "#{github_username} already exists"
+      puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       create_new_user
     end
     puts "Enter new user's full name:"
