@@ -23,7 +23,7 @@ class CommandLineInterface
             puts "#{@user.name} is already working on #{@selected_repo.project_name}"
           else
             @user.repos << @selected_repo
-            puts "#{@user.name} was successfully added to #{@selected_repo.project_name}"
+            puts "Added #{@user.name} to #{@selected_repo.project_name}"
           end
         end
       end
@@ -94,7 +94,7 @@ class CommandLineInterface
     puts
     puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "Welcome to GitHub Repo Explorer"
-    puts "We can help you find Github repos"
+    puts "We can help you find GitHub repos"
   end
 
   #Main Menu
@@ -167,7 +167,7 @@ class CommandLineInterface
   #Find by username Menu options
   def find_by_username_menu
     puts
-    puts "Enter a Github username with *EXACT* capitalization to list that user's repos:"
+    puts "Enter a GitHub username with *EXACT* capitalization to list that user's repos:"
     input = gets_user_input
     #if username exists in our DB, don't make API call.
     if !username_exists?(input)
@@ -273,7 +273,7 @@ class CommandLineInterface
   end
 
   def create_new_user
-    puts "Enter new user's github username:"
+    puts "Enter new user's GitHub username:"
     github_username = gets_user_input
     if username_exists?(github_username)
       puts "#{github_username} already exists"
